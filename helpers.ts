@@ -4,5 +4,10 @@ export const emulateRequest = async (data, delay: number): Promise<string> => ne
 
 export const getResponse = (statusCode: number, body: string) => ({
     statusCode,
+    headers: {
+        "Access-Control-Allow-Headers" : "Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET"
+    },
     body
 })
