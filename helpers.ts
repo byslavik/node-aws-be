@@ -2,12 +2,12 @@ export const emulateRequest = async (data, delay: number): Promise<string> => ne
     setTimeout(() => resolve(JSON.stringify(data)), delay);
 });
 
-export const getResponse = (statusCode: number, body: string) => ({
+export const getResponse = (statusCode: number, body: object) => ({
     statusCode,
     headers: {
         "Access-Control-Allow-Headers" : "Content-Type",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET"
     },
-    body
+    body: JSON.stringify(body)
 })
