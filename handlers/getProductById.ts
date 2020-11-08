@@ -1,15 +1,20 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
 import 'source-map-support/register';
-import { toys } from '../mocks';
 import { Toy } from '../types';
-import { emulateRequest, getResponse } from '../helpers';
+import { getResponse } from '../helpers';
+import { getDBClient } from '../db';
 
 export const handler = async (event, _context): Promise<APIGatewayProxyResult> => {
   try {
     console.log('Lambda getProductById invocation with:', event)
     const { pathParameters: { productId } } = event;
-    const carsData: Toy[] = await emulateRequest(toys, 10).then(data => JSON.parse(data));
-    const product = carsData.find(toy => toy.id === productId);
+    const client = await getDBClient();
+    const { rows: [product] = [] } = await client.query(`
+      select * from products p where id='${productId}'
+        JOIN stocks s ON p.id=s.product_id
+        JOIN brands b ON p.brand_id=b.id
+        JOIN categories c ON p.category_id=c.id
+    `);
     const status = product ? 200 : 404;
     const body = product || { message: 'Item not found' };
     console.log('Lambda getProductById execution successfully finished', body)

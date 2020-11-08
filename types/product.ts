@@ -1,11 +1,12 @@
 export interface Toy {
     id: string;
-    brand: string;
-    model: string;
-    category: string;
+    title: string;
+    brand_id: string;
+    brand_name: string;
+    category_id: string;
+    category_name: string;
     description: string;
     price: number;
-    inStock: boolean;
     imgUrl: string;
-    stock: number;
+    count: number;
 }
