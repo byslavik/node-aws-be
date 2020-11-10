@@ -7,6 +7,6 @@ export interface Toy {
     category_name: string;
     description: string;
     price: number;
-    imgUrl: string;
+    imgurl: string;
     count: number;
 }

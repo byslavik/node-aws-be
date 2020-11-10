@@ -1,6 +1,5 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
 import 'source-map-support/register';
-import { Toy } from '../types';
 import { getResponse } from '../helpers';
 import { getDBClient } from '../db';
 
@@ -10,10 +9,11 @@ export const handler = async (event, _context): Promise<APIGatewayProxyResult> =
     const { pathParameters: { productId } } = event;
     const client = await getDBClient();
     const { rows: [product] = [] } = await client.query(`
-      select * from products p where id='${productId}'
+      select * from products p
         JOIN stocks s ON p.id=s.product_id
         JOIN brands b ON p.brand_id=b.id
         JOIN categories c ON p.category_id=c.id
+        where p.id='${productId}'
     `);
     const status = product ? 200 : 404;
     const body = product || { message: 'Item not found' };
