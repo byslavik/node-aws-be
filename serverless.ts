@@ -28,9 +28,9 @@ const serverlessConfiguration: Serverless = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       PG_HOST: 'host',
       PG_PORT: 5432,
-      PG_DATABASE: 'dbname',
-      PG_USERNAME: 'dbuser',
-      PG_PASSWORD: 'dbpass'
+      PG_DATABASE: 'postgres',
+      PG_USERNAME: 'postgres',
+      PG_PASSWORD: '#B1y9S9L4a'
     },
   },
   functions: {
@@ -52,6 +52,7 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: 'post',
             path: 'products',
+            cors: true
           }
         }
       ]

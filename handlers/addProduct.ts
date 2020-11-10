@@ -25,13 +25,12 @@ export const handler = async (event, _context): Promise<APIGatewayProxyResult> =
         description,
         price,
         imgUrl,
-        count,
     } = parsedData;
 
     const client = await getDBClient();
     const { rowCount } = await client.query(`
-        insert into products (title, description, price, imgUrl, count) values
-            ('${title}', '${description}', ${price}, '${imgUrl}', '${count}');
+        insert into products (title, description, price, imgUrl) values
+            ('${title}', '${description}', ${price}, '${imgUrl}');
     `);
 
     const status = rowCount ? 200 : 404;
