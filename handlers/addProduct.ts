@@ -25,18 +25,17 @@ export const handler = async (event, _context): Promise<APIGatewayProxyResult> =
         description,
         price,
         imgUrl,
-        brand_id,
-        category_id
+        count,
     } = parsedData;
 
     const client = await getDBClient();
     const { rowCount } = await client.query(`
-        insert into products (title, description, price, imgUrl, brand_id, category_id) values
-            ('${title}', '${description}', ${price}, '${imgUrl}', '${brand_id}', '${category_id}');
+        insert into products (title, description, price, imgUrl, count) values
+            ('${title}', '${description}', ${price}, '${imgUrl}', '${count}');
     `);
 
     const status = rowCount ? 200 : 404;
-    const resBody = rowCount ? { message: 'Item added' } : { message: 'Item not found' };
+    const resBody = rowCount ? { message: 'Item added' } : { message: 'Item not added' };
 
     console.log('Lambda addProduct execution successfully finished', resBody)
 

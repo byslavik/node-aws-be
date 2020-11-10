@@ -8,10 +8,7 @@ export const handler = async (_event, _context): Promise<APIGatewayProxyResult> 
     console.log('Lambda getProductsList invocation with:', _event)
     const client = await getDBClient();
     const { rows: productList } = await client.query(`
-      select * from products p
-        JOIN stocks s ON p.id=s.product_id
-        JOIN brands b ON p.brand_id=b.id
-        JOIN categories c ON p.category_id=c.id
+      select p.*, s.count from products p LEFT JOIN stocks s ON p.id=s.product_id
     `);
 
     console.log('Lambda getProductsList execution successfully finished', productList)
