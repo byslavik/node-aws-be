@@ -1,0 +1,5 @@
+      PG_HOST: 'toys.cvse5tmwh2ym.eu-west-1.rds.amazonaws.com',
+      PG_PORT: 5432,
+      PG_DATABASE: 'postgres',
+      PG_USERNAME: 'postgres',
+      PG_PASSWORD: '#B1y9S9L4a'
