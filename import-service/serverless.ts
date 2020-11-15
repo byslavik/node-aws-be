@@ -19,6 +19,8 @@ const serverlessConfiguration: Serverless = {
   provider: {
     name: 'aws',
     runtime: 'nodejs12.x',
+    region: 'eu-west-1',
+    profile: 'mentoring',
     apiGateway: {
       minimumCompressionSize: 1024,
     },
@@ -39,13 +41,14 @@ const serverlessConfiguration: Serverless = {
     ]
   },
   functions: {
-    hello: {
-      handler: 'handler.importProductsFile',
+    importProductsFile: {
+      handler: 'handlers/importProductsFile.handler',
       events: [
         {
           http: {
             method: 'get',
             path: 'import',
+            cors: true,
             request: {
               parameters:{
                 querystrings:{
