@@ -1,11 +1,10 @@
 import { Serverless } from 'serverless/aws';
 
+const BUCKET_NAME = 'aws-nodejs-product-service-storage';
+
 const serverlessConfiguration: Serverless = {
   service: {
     name: 'import-service',
-    // app and org for use with dashboard.serverless.com
-    // app: your-app-name,
-    // org: your-org-name,
   },
   frameworkVersion: '2',
   custom: {
@@ -26,17 +25,18 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      BUCKET_NAME
     },
     iamRoleStatements: [
       {
         Effect: 'Allow',
         Action: 's3:ListBucket',
-        Resource: 'arn:aws:s3:::aws-nodejs-product-service-storage'
+        Resource: `arn:aws:s3:::${BUCKET_NAME}`
       },
       {
         Effect: 'Allow',
         Action: 's3:*',
-        Resource: 'arn:aws:s3:::aws-nodejs-product-service-storage/*'
+        Resource: `arn:aws:s3:::${BUCKET_NAME}/*`
       }
     ]
   },
@@ -59,7 +59,25 @@ const serverlessConfiguration: Serverless = {
           }
         }
       ]
-    }
+    },
+    importFileParser: {
+      handler: 'handlers/importFileParser.handler',
+      events: [
+        {
+          s3: {
+            bucket: BUCKET_NAME,
+            event: 's3:ObjectCreated:*',
+            rules: [
+              {
+                prefix: 'uploaded/',
+                suffix: '.csv',
+              },
+            ],
+            existing: true,
+          }
+        }
+      ]
+    },
   }
 }
 
