@@ -1,6 +1,6 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
 import 'source-map-support/register';
-import { getResponse } from '../helpers';
+import { getResponse } from '../../helpers';
 import { getDBClient } from '../db';
 
 export const handler = async (_event, _context): Promise<APIGatewayProxyResult> => {

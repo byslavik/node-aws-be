@@ -2,7 +2,7 @@ import { rules } from './../validation/product';
 import { APIGatewayProxyResult } from 'aws-lambda';
 import 'source-map-support/register';
 import Validator from 'validatorjs';
-import { getResponse } from '../helpers';
+import { getResponse } from '../../helpers';
 import { getDBClient } from '../db';
 
 export const handler = async (event, _context): Promise<APIGatewayProxyResult> => {

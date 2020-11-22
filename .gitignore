@@ -1,13 +1,4 @@
-# package directories
 node_modules
-jspm_packages
-
-# Serverless directories
-.serverless
-
-#Editor
 .vscode
-
-# Webpack directories
+.serverless
 .webpack
-node_modules
