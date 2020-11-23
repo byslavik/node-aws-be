@@ -20,18 +20,14 @@ const serverlessConfiguration: Serverless = {
     runtime: 'nodejs12.x',
     region: 'eu-west-1',
     profile: 'mentoring',
+    stage: 'dev',
     apiGateway: {
       minimumCompressionSize: 1024,
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       BUCKET_NAME,
-      SQS_URL: {
-        Ref: 'SQSQueue'
-      },
-      SNS_ARN: {
-        Ref: 'SNSTopic'
-      }
+      SQS_URL: '${cf:product-service-${self:provider.stage}.SQSQueueUrl}',
     },
     iamRoleStatements: [
       {
@@ -47,44 +43,9 @@ const serverlessConfiguration: Serverless = {
       {
         Effect: 'Allow',
         Action: 'sqs:*',
-        Resource: {
-          'Fn::GetAtt': ['SQSQueue', 'Arn']
-        }
+        Resource: '${cf:product-service-${self:provider.stage}.SQSQueueARN}'
       },
-      {
-        Effect: 'Allow',
-        Action: 'sns:*',
-        Resource: {
-          Ref: 'SNSTopic'
-        }
-      }
     ]
-  },
-  resources:{
-    Resources: {
-      SQSQueue: {
-        Type: 'AWS::SQS::Queue',
-        Properties: {
-          QueueName: 'import-service-sqs-queue'
-        }
-      },
-      SNSTopic: {
-        Type: 'AWS::SNS::Topic',
-        Properties: {
-          TopicName: 'import-service-sns-topic'
-        }
-      },
-      SNSSubscription: {
-        Type: 'AWS::SNS::Subscription',
-        Properties: {
-          Endpoint: 'rsapp.sns.sqs.test.email@gmail.com',
-          Protocol: 'email',
-          TopicArn: {
-            Ref: 'SNSTopic'
-          }
-        }
-      }
-    }
   },
   functions: {
     importProductsFile: {
@@ -120,19 +81,6 @@ const serverlessConfiguration: Serverless = {
               },
             ],
             existing: true,
-          }
-        }
-      ]
-    },
-    catalogBatchProcess: {
-      handler: 'handlers/catalogBatchProcess.handler',
-      events: [
-        {
-          sqs: {
-            batchSize: 5,
-            arn: {
-              'Fn::GetAtt': ['SQSQueue', 'Arn']
-            }
           }
         }
       ]

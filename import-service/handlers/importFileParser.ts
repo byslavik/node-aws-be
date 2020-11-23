@@ -21,14 +21,15 @@ export const handler = (event: S3Event, _context) => {
           trim: true,
           delimiter: ';',
         }))
-        .on('data', (chunk: Buffer) => {
+        .on('data', async (chunk: Buffer) => {
           const data = chunk.toString('utf8');
-          sqs.sendMessage({
+
+          await sqs.sendMessage({
             QueueUrl: SQS_URL,
             MessageBody: data
-          }, () => {
-            console.log('Send product to sqs', data)
-          })
+          }).promise();
+
+          console.log('Send product to sqs', data)
         })
         .on('end', async () => {
           const from = `${BUCKET_NAME}/${record.s3.object.key}`;
