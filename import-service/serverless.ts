@@ -47,6 +47,52 @@ const serverlessConfiguration: Serverless = {
       },
     ]
   },
+  resources: {
+    Resources: {
+      GatewayResponseAccessDenied: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi'
+          },
+          ResponseType: 'ACCESS_DENIED',
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Methods': "'GET,OPTIONS'",
+          },
+        }
+      }, 
+      GatewayResponseUnauthorized: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi'
+          },
+          ResponseType: 'UNAUTHORIZED',
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Methods': "'GET,OPTIONS'",
+          },
+        }
+      }, 
+      GatewayResponseAuthorizerFailure: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi'
+          },
+          ResponseType: 'AUTHORIZER_FAILURE',
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Methods': "'GET,OPTIONS'",
+          },
+        }
+      }
+    }
+  },
   functions: {
     importProductsFile: {
       handler: 'handlers/importProductsFile.handler',
@@ -62,6 +108,13 @@ const serverlessConfiguration: Serverless = {
                   name: true
                 }
               }
+            },
+            authorizer: {
+              name: 'basicAuth',
+              arn: '${cf:auth-service-${self:provider.stage}.AuthARN}',
+              resultTtlInSeconds: 0,
+              identitySource: 'method.request.header.Authorization',
+              type: 'token',
             }
           }
         }
