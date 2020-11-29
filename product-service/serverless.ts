@@ -30,8 +30,71 @@ const serverlessConfiguration: Serverless = {
       PG_PORT: 5432,
       PG_DATABASE: 'postgres',
       PG_USERNAME: 'postgres',
-      PG_PASSWORD: '#B1y9S9L4a'
+      PG_PASSWORD: 'pass',
+      SNS_ARN: {
+        Ref: 'SNSTopic'
+      }
     },
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: 'sqs:*',
+        Resource: {
+          'Fn::GetAtt': ['SQSQueue', 'Arn']
+        }
+      },
+      {
+        Effect: 'Allow',
+        Action: 'sns:*',
+        Resource: {
+          Ref: 'SNSTopic'
+        }
+      }
+    ]
+  },
+  resources:{
+    Resources: {
+      SQSQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: 'product-service-sqs-queue'
+        }
+      },
+      SNSTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: 'product-service-sns-topic'
+        }
+      },
+      SNSSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'rsapp.sns.sqs.test.email@gmail.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic'
+          }
+        }
+      }
+    },
+    Outputs: {
+      SQSQueueUrl: {
+        Value: {
+          Ref: 'SQSQueue'
+        },
+        Export: {
+          Name: 'SQSQueueUrl'
+        }
+      },
+      SQSQueueARN: {
+        Value: {
+          'Fn::GetAtt': ['SQSQueue', 'Arn']
+        },
+        Export: {
+          Name: 'SQSQueueARN'
+        }
+      }
+    }
   },
   functions: {
     getProductsList: {
@@ -64,6 +127,19 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: 'get',
             path: 'products/{productId}',
+          }
+        }
+      ]
+    },
+    catalogBatchProcess: {
+      handler: 'handlers/catalogBatchProcess.handler',
+      events: [
+        {
+          sqs: {
+            batchSize: 5,
+            arn: {
+              'Fn::GetAtt': ['SQSQueue', 'Arn']
+            }
           }
         }
       ]

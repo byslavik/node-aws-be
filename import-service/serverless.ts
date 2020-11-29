@@ -20,12 +20,14 @@ const serverlessConfiguration: Serverless = {
     runtime: 'nodejs12.x',
     region: 'eu-west-1',
     profile: 'mentoring',
+    stage: 'dev',
     apiGateway: {
       minimumCompressionSize: 1024,
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-      BUCKET_NAME
+      BUCKET_NAME,
+      SQS_URL: '${cf:product-service-${self:provider.stage}.SQSQueueUrl}',
     },
     iamRoleStatements: [
       {
@@ -37,7 +39,12 @@ const serverlessConfiguration: Serverless = {
         Effect: 'Allow',
         Action: 's3:*',
         Resource: `arn:aws:s3:::${BUCKET_NAME}/*`
-      }
+      },
+      {
+        Effect: 'Allow',
+        Action: 'sqs:*',
+        Resource: '${cf:product-service-${self:provider.stage}.SQSQueueARN}'
+      },
     ]
   },
   functions: {
@@ -77,7 +84,7 @@ const serverlessConfiguration: Serverless = {
           }
         }
       ]
-    },
+    }
   }
 }
 
