@@ -49,15 +49,59 @@ const serverlessConfiguration: Serverless = {
   },
   resources: {
     Resources: {
-      GatewayResponseDefault4XX: {
+      GatewayResponseMissingAuthenticationToken: {
         Type: 'AWS::ApiGateway::GatewayResponse',
         Properties: {
           ResponseParameters: {
             'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
-            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
-            "gatewayresponse.header.Access-Control-Allow-Credentials": "'true'"
+            'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'",
           },
-          ResponseType: 'DEFAULT_4XX',
+          ResponseType: 'MISSING_AUTHENTICATION_TOKEN',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi',
+          },
+        },
+      },
+      GatewayResponseAuthorizerFailure: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseTemplates: {
+            'application/json': JSON.stringify({
+              message: 'Authorizer failure'
+            })
+          },
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'",
+          },
+          ResponseType: 'AUTHORIZER_FAILURE',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi',
+          },
+        },
+      },
+      GatewayResponseDenied: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'",
+          },
+          ResponseType: 'ACCESS_DENIED',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi',
+          },
+        },
+      },
+
+      GatewayResponseUnauthorized: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'",
+          },
+          ResponseType: 'UNAUTHORIZED',
           RestApiId: {
             Ref: 'ApiGatewayRestApi',
           },

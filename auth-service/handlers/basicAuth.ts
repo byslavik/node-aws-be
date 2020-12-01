@@ -15,6 +15,7 @@ export const handler: APIGatewayTokenAuthorizerHandler = (event, _context, cb) =
   try {
     const { authorizationToken, methodArn } = event;
     const encCreds = authorizationToken.split(' ')[1];
+
     const [username, password] = Buffer.from(encCreds, 'base64').toString('utf-8').split(':');
     const storedPass = process.env[username];
 
@@ -25,6 +26,6 @@ export const handler: APIGatewayTokenAuthorizerHandler = (event, _context, cb) =
     console.log('Auth execution success', JSON.stringify(policy))
   } catch (err) {
     console.log(`Auth error: ${err.message}`)
-    cb(`Unauthorized: ${err.message}`)
+    cb('Unauthorized')
   }
 }

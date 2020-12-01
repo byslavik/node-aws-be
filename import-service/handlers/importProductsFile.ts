@@ -8,7 +8,7 @@ import { ALLOWED_EXTENSIONS } from '../constants';
 export const handler: APIGatewayProxyHandler = async (event, _context) => {
   console.log('Running importProductFile lambda');
 
-  const { queryStringParameters: { name: fileName } } = event
+  const { queryStringParameters: { name: fileName = '' } = {} } = event
   
   if (!fileName) {
     console.log('Missing file');
