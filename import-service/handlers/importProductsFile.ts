@@ -9,6 +9,12 @@ export const handler: APIGatewayProxyHandler = async (event, _context) => {
   console.log('Running importProductFile lambda');
 
   const { queryStringParameters: { name: fileName } } = event
+  
+  if (!fileName) {
+    console.log('Missing file');
+
+    return getResponse(400, { message: 'There is no file passed' })
+  }
   if (!checkRequestedFile(fileName)) {
     console.log('Unsupported file type', fileName);
 

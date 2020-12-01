@@ -49,48 +49,20 @@ const serverlessConfiguration: Serverless = {
   },
   resources: {
     Resources: {
-      GatewayResponseAccessDenied: {
+      GatewayResponseDefault4XX: {
         Type: 'AWS::ApiGateway::GatewayResponse',
         Properties: {
-          RestApiId: {
-            Ref: 'ApiGatewayRestApi'
-          },
-          ResponseType: 'ACCESS_DENIED',
           ResponseParameters: {
             'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
             'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
-            'gatewayresponse.header.Access-Control-Allow-Methods': "'GET,OPTIONS'",
+            "gatewayresponse.header.Access-Control-Allow-Credentials": "'true'"
           },
-        }
-      }, 
-      GatewayResponseUnauthorized: {
-        Type: 'AWS::ApiGateway::GatewayResponse',
-        Properties: {
+          ResponseType: 'DEFAULT_4XX',
           RestApiId: {
-            Ref: 'ApiGatewayRestApi'
+            Ref: 'ApiGatewayRestApi',
           },
-          ResponseType: 'UNAUTHORIZED',
-          ResponseParameters: {
-            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
-            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
-            'gatewayresponse.header.Access-Control-Allow-Methods': "'GET,OPTIONS'",
-          },
-        }
-      }, 
-      GatewayResponseAuthorizerFailure: {
-        Type: 'AWS::ApiGateway::GatewayResponse',
-        Properties: {
-          RestApiId: {
-            Ref: 'ApiGatewayRestApi'
-          },
-          ResponseType: 'AUTHORIZER_FAILURE',
-          ResponseParameters: {
-            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
-            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
-            'gatewayresponse.header.Access-Control-Allow-Methods': "'GET,OPTIONS'",
-          },
-        }
-      }
+        },
+      },
     }
   },
   functions: {
