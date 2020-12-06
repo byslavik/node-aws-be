@@ -5,9 +5,9 @@ export const emulateRequest = async (data, delay: number): Promise<string> => ne
 export const getResponse = (statusCode: number, body: object) => ({
     statusCode,
     headers: {
-        "Access-Control-Allow-Headers" : "Content-Type",
+        "Access-Control-Allow-Headers" : "*",
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET"
+        "Access-Control-Allow-Methods": "*"
     },
     body: JSON.stringify(body)
 })

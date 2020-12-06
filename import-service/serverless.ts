@@ -47,6 +47,68 @@ const serverlessConfiguration: Serverless = {
       },
     ]
   },
+  resources: {
+    Resources: {
+      GatewayResponseMissingAuthenticationToken: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'",
+          },
+          ResponseType: 'MISSING_AUTHENTICATION_TOKEN',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi',
+          },
+        },
+      },
+      GatewayResponseAuthorizerFailure: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseTemplates: {
+            'application/json': JSON.stringify({
+              message: 'Authorizer failure'
+            })
+          },
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'",
+          },
+          ResponseType: 'AUTHORIZER_FAILURE',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi',
+          },
+        },
+      },
+      GatewayResponseDenied: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'",
+          },
+          ResponseType: 'ACCESS_DENIED',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi',
+          },
+        },
+      },
+
+      GatewayResponseUnauthorized: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'",
+          },
+          ResponseType: 'UNAUTHORIZED',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi',
+          },
+        },
+      },
+    }
+  },
   functions: {
     importProductsFile: {
       handler: 'handlers/importProductsFile.handler',
@@ -62,6 +124,13 @@ const serverlessConfiguration: Serverless = {
                   name: true
                 }
               }
+            },
+            authorizer: {
+              name: 'basicAuth',
+              arn: '${cf:auth-service-${self:provider.stage}.AuthARN}',
+              resultTtlInSeconds: 0,
+              identitySource: 'method.request.header.Authorization',
+              type: 'token',
             }
           }
         }
