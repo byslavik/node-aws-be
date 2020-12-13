@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config()
 import express from 'express'
+import cors from 'cors'
 import axios, { AxiosRequestConfig, Method } from 'axios'
 import NodeCache from 'node-cache';
 
@@ -16,6 +17,7 @@ const servicesCache = new NodeCache({
 const SERVICES_TO_CACHE = ['product']
 
 app.use(express.json());
+app.use(cors());
 
 app.all('/*', (req, res) => {
     console.log('Running BFF', req.originalUrl, req.method, req.body)
@@ -32,7 +34,7 @@ app.all('/*', (req, res) => {
 			}
 		}
 
-        const resultUrl = [targetUrl, restUrlParams].join('/')
+        const resultUrl = [targetUrl, ...restUrlParams].join('/')
         console.log('Forward to', resultUrl);
 		const axiosConfig: AxiosRequestConfig = {
 			method: req.method as Method,
